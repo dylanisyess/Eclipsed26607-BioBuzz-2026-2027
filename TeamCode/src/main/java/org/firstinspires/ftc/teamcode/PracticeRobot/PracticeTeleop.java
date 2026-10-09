@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode.PracticeRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="teleop", group="Linear OpMode")
+@TeleOp(name="Practiceteleop", group="Linear OpMode")
 
 public class PracticeTeleop extends LinearOpMode {
     private final PracticeRobot Robot = new PracticeRobot();
 
-    double vx, vy, omega;
+    double left, right, omega;
 
     public void runOpMode() {
         Robot.init(hardwareMap);
@@ -24,12 +24,12 @@ public class PracticeTeleop extends LinearOpMode {
         Robot.runtime.reset();
 
         while (opModeIsActive()) {
-            vx = gamepad1.left_stick_x;
-            vy = -gamepad1.left_stick_y;
+            left = gamepad1.left_stick_y;
+            right = gamepad1.right_stick_y;
             omega = gamepad1.right_stick_x;
 
-            Robot.left.setPower(vx);
-            Robot.right.setPower(vy);
+            Robot.left.setPower(left);
+            Robot.right.setPower(right);
 
             if (gamepad1.y) {
                 Robot.intake.setPower(1);

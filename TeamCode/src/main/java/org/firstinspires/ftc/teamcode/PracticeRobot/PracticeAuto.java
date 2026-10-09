@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.PracticeRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="autoPostRight", group="Linear OpMode")
+@Autonomous(name="PracticeAuto", group="Linear OpMode")
 
 public class PracticeAuto extends LinearOpMode {
     private final PracticeRobot Robot = new PracticeRobot();

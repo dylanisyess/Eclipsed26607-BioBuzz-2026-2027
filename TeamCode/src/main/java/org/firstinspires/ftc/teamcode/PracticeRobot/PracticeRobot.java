@@ -31,9 +31,9 @@ public class PracticeRobot {
     boolean intaking;
 
     public void init(HardwareMap hardwareMap) {
-        left = hardwareMap.get(DcMotor.class, "Left");
-        right = hardwareMap.get(DcMotor.class, "Right");
-        intake = hardwareMap.get(DcMotor.class, "Intake");
+        left = hardwareMap.get(DcMotor.class, "left");
+        right = hardwareMap.get(DcMotor.class, "right");
+        intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         motors = Arrays.asList(left, right);
 
