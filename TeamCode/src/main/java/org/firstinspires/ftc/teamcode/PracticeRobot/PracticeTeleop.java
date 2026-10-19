@@ -34,13 +34,8 @@ public class PracticeTeleop extends LinearOpMode {
             if (gamepad1.y) {
                 Robot.intake.setPower(1);
             }
-            if (gamepad1.b) {
-                Robot.intake.setPower(0.8);
-            }
+
             if (gamepad1.a) {
-                Robot.intake.setPower(0.6);
-            }
-            if (gamepad1.x) {
                 Robot.intake.setPower(0);
             }
 

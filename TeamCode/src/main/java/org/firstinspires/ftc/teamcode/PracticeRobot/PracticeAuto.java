@@ -16,11 +16,15 @@ public class PracticeAuto extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
         waitForStart();
 
         Robot.left.setPower(0.6);
         Robot.right.setPower(0.6);
+        Robot.shooter.setPower(1);
+
         sleep(2000);
+
         Robot.left.setPower(0);
         Robot.right.setPower(0);
 
