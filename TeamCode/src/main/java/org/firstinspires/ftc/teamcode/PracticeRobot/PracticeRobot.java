@@ -61,34 +61,17 @@ public class PracticeRobot {
     }
 
     public void shootHard() {
-        shooter.setTargetPosition(96);
         shooter.setPower(1);
-        while (shooter.isBusy()) {
-
-        }
-        shooter.setPower(0);
-        shooter.setTargetPosition(0);
-        shooter.setPower(0.5);
-        while (shooter.isBusy()) {
-
-        }
-        shooter.setPower(0);
     }
 
     public void shootSoft() {
-        shooter.setTargetPosition(96);
         shooter.setPower(0.5);
-        while (shooter.isBusy()) {
+    }
 
-        }
-        shooter.setPower(0);
-        shooter.setTargetPosition(0);
-        shooter.setPower(0.5);
-        while (shooter.isBusy()) {
-
-        }
+public void shootZero() {
         shooter.setPower(0);
     }
+
 
 }
 
