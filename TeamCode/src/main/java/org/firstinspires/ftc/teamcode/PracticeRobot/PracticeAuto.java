@@ -19,28 +19,55 @@ public class PracticeAuto extends LinearOpMode {
 
         waitForStart();
 
+        sleep(500);
+
+        Robot.left.setPower(0.5);
+        Robot.right.setPower(0.5);
+
+        sleep(650);
+
+        Robot.left.setPower(0);
+        Robot.right.setPower(0);
+
+        sleep(300);
+
         Robot.shooter.setPower(1);
 
-        sleep(1000);
+        sleep(2500);
 
-        Robot.intake.setPower(1);
+        Robot.intake.setPower(0.4);
 
-        sleep(5000);
+        sleep(3000);
 
         Robot.shooter.setPower(0);
         Robot.intake.setPower(0);
 
-        sleep(1000);
+        sleep(400);
+
+        Robot.left.setPower(0.7);
+        Robot.right.setPower(0);
+
+        sleep(800);
+
+        Robot.left.setPower(1);
+        Robot.right.setPower(1);
+
+        sleep(750);
 
         Robot.left.setPower(0);
-        Robot.right.setPower(0.5);
+        Robot.right.setPower(0);
+
+        sleep(250);
+
+        Robot.left.setPower(0);
+        Robot.right.setPower(0.7);
 
         sleep(500);
 
         Robot.left.setPower(1);
         Robot.right.setPower(1);
 
-        sleep(4000);
+        sleep(1500);
 
         Robot.left.setPower(0);
         Robot.right.setPower(0);

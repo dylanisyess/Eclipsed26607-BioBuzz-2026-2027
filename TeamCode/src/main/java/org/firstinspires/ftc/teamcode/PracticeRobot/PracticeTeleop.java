@@ -2,20 +2,39 @@ package org.firstinspires.ftc.teamcode.PracticeRobot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Practiceteleop", group="Linear OpMode")
 
 public class PracticeTeleop extends LinearOpMode {
     private final PracticeRobot Robot = new PracticeRobot();
 
-    double left, right, omega;
+    double left, right, omega, intakePower;
+    boolean reverse;
+
+
+    enum shooterState {
+        idle,
+        backwards,
+        shooter,
+        intake
+    }
+
+    enum driveState {
+        forward,
+        reverse
+    }
+
+    ElapsedTime time = new ElapsedTime();
+    shooterState currentState = shooterState.idle;
+    driveState driverState = driveState.forward;
 
     public void runOpMode() {
         Robot.init(hardwareMap);
-//        telemetry.addData("FL lamprey", Robot.frontLeftLamprey == null ? "NULL" : "OK");
         telemetry.update();
 
         Robot.intaking = false;
+        reverse = false;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -28,36 +47,67 @@ public class PracticeTeleop extends LinearOpMode {
             right = gamepad1.right_stick_y;
             omega = gamepad1.right_stick_x;
 
-            Robot.left.setPower(left);
-            Robot.right.setPower(right);
+            switch (driverState) {
+                case forward:
+                    Robot.left.setPower(left);
+                    Robot.right.setPower(right);
+                    if (gamepad1.right_bumper) {
+                        driverState = driveState.reverse;
+                    }
+                    break;
+                case reverse:
+                    Robot.left.setPower(-right);
+                    Robot.right.setPower(-left);
+                    if (gamepad1.left_bumper) {
+                        driverState = driveState.forward;
+                    }
+                    break;
+            }
+
+            switch (currentState) {
+                case idle:
+                    Robot.shooter.setPower(0);
+                    Robot.intake.setPower(0);
+                    if (gamepad1.dpad_up) {
+                        time.reset();
+                        currentState = shooterState.backwards;
+                    }
+                    break;
+                case backwards:
+                    Robot.shooter.setPower(-0.4);
+                    if (time.seconds() >= 1) {
+                        time.reset();
+                        currentState = shooterState.shooter;
+                    }
+                    break;
+                case shooter:
+                    Robot.shooter.setPower(1);
+                    if (time.seconds() >= 2.5) {
+                        time.reset();
+                        currentState = shooterState.intake;
+                    }
+                    break;
+                case intake:
+                    Robot.intake.setPower(0.4);
+                    if (time.seconds() >= 3) {
+                        time.reset();
+                        currentState = shooterState.idle;
+                    }
+                    break;
+            }
 
             if (gamepad1.y) {
-                Robot.intake.setPower(1);
+                intakePower = 1;
             }
 
             if (gamepad1.a) {
-                Robot.intake.setPower(0);
+                intakePower = 0;
             }
 
-            if (gamepad1.right_bumper) {
-                Robot.intake.setPower(-0.5);
-            }
+            Robot.intake.setPower(intakePower);
 
-            if (gamepad1.dpad_up) {
-                Robot.shooter.setPower(1);
-            }
-            if (gamepad1.dpad_right) {
-                Robot.shooter.setPower(0.8);
-            }
             if (gamepad1.dpad_down) {
-                Robot.shooter.setPower(0.6);
-            }
-            if (gamepad1.dpad_left) {
-                Robot.shooter.setPower(0);
-            }
-
-            if (gamepad1.left_bumper) {
-                Robot.shooter.setPower(-0.5);
+                currentState = shooterState.idle;
             }
 
             telemetry.update();
