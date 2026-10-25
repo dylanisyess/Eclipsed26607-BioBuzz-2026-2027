@@ -24,7 +24,7 @@ public class PracticeAuto extends LinearOpMode {
         Robot.left.setPower(0.5);
         Robot.right.setPower(0.5);
 
-        sleep(650);
+        sleep(700);
 
         Robot.left.setPower(0);
         Robot.right.setPower(0);
@@ -52,7 +52,7 @@ public class PracticeAuto extends LinearOpMode {
         Robot.left.setPower(1);
         Robot.right.setPower(1);
 
-        sleep(750);
+        sleep(400);
 
         Robot.left.setPower(0);
         Robot.right.setPower(0);
@@ -62,12 +62,12 @@ public class PracticeAuto extends LinearOpMode {
         Robot.left.setPower(0);
         Robot.right.setPower(0.7);
 
-        sleep(500);
+        sleep(600);
 
         Robot.left.setPower(1);
         Robot.right.setPower(1);
 
-        sleep(1500);
+        sleep(1250);
 
         Robot.left.setPower(0);
         Robot.right.setPower(0);
