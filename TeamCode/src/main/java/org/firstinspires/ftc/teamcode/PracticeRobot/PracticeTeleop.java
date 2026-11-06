@@ -4,10 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
+
 @TeleOp(name="Practiceteleop", group="Linear OpMode")
 
 public class PracticeTeleop extends LinearOpMode {
+    private static final String ALLIANCE = "RED"; // "RED" or "BLUE"
+
     private final PracticeRobot Robot = new PracticeRobot();
+    private final PracticeC270 C270 = new PracticeC270();
 
     double left, right, omega, intakePower;
     boolean reverse;
@@ -31,6 +36,7 @@ public class PracticeTeleop extends LinearOpMode {
 
     public void runOpMode() {
         Robot.init(hardwareMap);
+        C270.init(hardwareMap, telemetry);
         telemetry.update();
 
         Robot.intaking = false;
@@ -47,27 +53,41 @@ public class PracticeTeleop extends LinearOpMode {
             right = gamepad1.right_stick_y;
             omega = gamepad1.right_stick_x;
 
-            switch (driverState) {
-                case forward:
-                    Robot.left.setPower(left);
-                    Robot.right.setPower(right);
-                    if (gamepad1.right_bumper) {
-                        driverState = driveState.reverse;
-                    }
-                    break;
-                case reverse:
-                    Robot.left.setPower(-right);
-                    Robot.right.setPower(-left);
-                    if (gamepad1.left_bumper) {
-                        driverState = driveState.forward;
-                    }
-                    break;
+            C270.update();
+            AprilTagClusterDetection target = C270.getScorableCluster(ALLIANCE);
+
+            // Hold X to align. Drops back to manual driving if the target is lost
+            if (gamepad1.x && target != null) {
+                Robot.alignToDistance(C270.getForwardDistance(target));
+            } else {
+                switch (driverState) {
+                    case forward:
+                        Robot.left.setPower(left);
+                        Robot.right.setPower(right);
+                        if (gamepad1.right_bumper) {
+                            driverState = driveState.reverse;
+                        }
+                        break;
+                    case reverse:
+                        Robot.left.setPower(-right);
+                        Robot.right.setPower(-left);
+                        if (gamepad1.left_bumper) {
+                            driverState = driveState.forward;
+                        }
+                        break;
+                }
+            }
+
+            if (target != null) {
+                C270.displayClusterTelemetry(target);
+                telemetry.addData("Align target", "%.1f cm", PracticeRobot.ALIGN_DISTANCE);
+            } else {
+                telemetry.addData("Align target", "not found");
             }
 
             switch (currentState) {
                 case idle:
                     Robot.shooter.setPower(0);
-                    Robot.intake.setPower(0);
                     if (gamepad1.dpad_up) {
                         time.reset();
                         currentState = shooterState.backwards;
@@ -81,7 +101,8 @@ public class PracticeTeleop extends LinearOpMode {
                     }
                     break;
                 case shooter:
-                    Robot.shooter.setPower(1);
+//                    Robot.shooter.setVelocity(PracticeShooter.TARGET_VELOCITY);
+                    Robot.shooter.setPower(0.8);
                     if (time.seconds() >= 3) {
                         time.reset();
                         currentState = shooterState.intake;
@@ -104,7 +125,10 @@ public class PracticeTeleop extends LinearOpMode {
                 intakePower = 0;
             }
 
-            Robot.intake.setPower(intakePower);
+            // The intake state controls the intake while it's feeding
+            if (currentState != shooterState.intake) {
+                Robot.intake.setPower(intakePower);
+            }
 
             if (gamepad1.dpad_down) {
                 currentState = shooterState.idle;
@@ -112,5 +136,7 @@ public class PracticeTeleop extends LinearOpMode {
 
             telemetry.update();
         }
+
+        C270.stop();
     }
 }

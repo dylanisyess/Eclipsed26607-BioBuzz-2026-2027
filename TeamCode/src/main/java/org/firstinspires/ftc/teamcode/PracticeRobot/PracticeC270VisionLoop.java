@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.PracticeRobot.PracticeC270;
-import org.firstinspires.ftc.vision.apriltag.AprilTagSingleDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 
 @Autonomous(name="PracticeC270VisionLoops", group="OpMode")
 public class PracticeC270VisionLoop extends OpMode {
@@ -25,9 +25,10 @@ public class PracticeC270VisionLoop extends OpMode {
     @Override
     public void loop(){
         C270.update();
-        AprilTagSingleDetection id35 = C270.getTagBySpecificId(35);
-        telemetry.addData("Tags seen", C270.getDetectedTags().size());
-        C270.displayDetectionTelemetry(id35);
+        telemetry.addData("Clusters seen", C270.getDetectedClusters().size());
+        for (AprilTagClusterDetection cluster : C270.getDetectedClusters()) {
+            C270.displayClusterTelemetry(cluster);
+        }
     }
 
     @Override

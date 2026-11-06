@@ -31,7 +31,7 @@ public class PracticeAuto extends LinearOpMode {
 
         sleep(300);
 
-        Robot.shooter.setPower(1);
+        Robot.shooter.setVelocity(PracticeShooter.TARGET_VELOCITY);
 
         sleep(2500);
 
