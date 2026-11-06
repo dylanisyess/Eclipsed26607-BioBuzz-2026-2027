@@ -20,6 +20,11 @@ public class PID {
         this.prevTime = System.nanoTime() / 1e9;
     }
 
+    public PID(double kP, double kI, double kD, double PIDMin) {
+        this(kP, kI, kD);
+        this.PIDMin = PIDMin;
+    }
+
     public double calculate(double error) {
         double currentTime = System.nanoTime() / 1e9;
         double dt = currentTime - prevTime;
