@@ -13,6 +13,7 @@ public class PracticeDriveTuner extends LinearOpMode {
     private final PracticeRobot Robot = new PracticeRobot();
 
     double targetHeading = 0;
+    double lastMoveTime = 0;
 
     public void runOpMode() {
         Robot.init(hardwareMap);
@@ -25,6 +26,8 @@ public class PracticeDriveTuner extends LinearOpMode {
         Robot.resetHeading();
 
         while (opModeIsActive()) {
+            double loopStart = getRuntime();
+
             if (gamepad1.yWasPressed()) {
                 Robot.driveDistance(this, TEST_DISTANCE);
             }
@@ -40,6 +43,12 @@ public class PracticeDriveTuner extends LinearOpMode {
                 Robot.turnToHeading(this, targetHeading);
             }
 
+            // Moves block, so a long loop means one just ran
+            double loopTime = getRuntime() - loopStart;
+            if (loopTime > 0.1) {
+                lastMoveTime = loopTime;
+            }
+
             displayTelemetry();
         }
     }
@@ -48,6 +57,8 @@ public class PracticeDriveTuner extends LinearOpMode {
         telemetry.addData("Heading", "%.1f deg (target %.0f)", Robot.getHeading(), targetHeading);
         telemetry.addData("Left distance", "%.1f cm", Robot.getLeftDistance());
         telemetry.addData("Right distance", "%.1f cm", Robot.getRightDistance());
+        // 3 s for a turn or 5 s for a drive means it timed out instead of finishing
+        telemetry.addData("Last move", "%.1f s", lastMoveTime);
         telemetry.addLine("Y/A drive +/-60 cm, X turn to 90, B turn to 0");
         telemetry.update();
     }

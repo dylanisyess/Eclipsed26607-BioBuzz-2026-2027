@@ -9,15 +9,15 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class PracticeShooter {
     // Untuned estimates for a bare UltraPlanetary (2800 ticks/s with no load)
     // Replace these with the values from PracticeShooterTuner
-    public static final double P = 40;
-    public static final double F = 20;
-    public static final double TARGET_VELOCITY = 2380; // ticks per second
-
+    public static final double P = 30;
+    public static final double F = 12;
+    public static final double TARGET_VELOCITY = 2000; // ticks per second
+//max = 2200 ticks / sec
     private DcMotorEx shooter;
 
     public void init(HardwareMap hwMap) {
         shooter = hwMap.get(DcMotorEx.class, "shooter");
-        shooter.setDirection(Direction.REVERSE);
+        shooter.setDirection(Direction.FORWARD);
         setPIDF(P, F);
     }
 

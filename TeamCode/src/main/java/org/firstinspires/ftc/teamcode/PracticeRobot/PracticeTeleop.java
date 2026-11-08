@@ -102,7 +102,7 @@ public class PracticeTeleop extends LinearOpMode {
                     break;
                 case shooter:
 //                    Robot.shooter.setVelocity(PracticeShooter.TARGET_VELOCITY);
-                    Robot.shooter.setPower(0.8);
+                    Robot.shooter.setPower(1);
                     if (time.seconds() >= 3) {
                         time.reset();
                         currentState = shooterState.intake;

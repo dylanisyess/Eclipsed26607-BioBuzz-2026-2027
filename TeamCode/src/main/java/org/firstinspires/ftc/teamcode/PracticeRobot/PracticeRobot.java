@@ -49,8 +49,10 @@ public class PracticeRobot {
     private static final double HEADING_HOLD_MAX_POWER = 0.2;
 
     private final PID alignPID = new PID(0.008, 0, 0);
-    private final PID turnPID = new PID(0.012, 0, 0, 0.15);
-    private final PID drivePID = new PID(0.015, 0, 0, 0.15);
+    // The last number is the lowest power that still moves the robot. Too low and it stops short,
+    // too high and it rocks back and forth at the end
+    private final PID turnPID = new PID(0.012, 0, 0, 0.3);
+    private final PID drivePID = new PID(0.015, 0, 0, 0.25);
 
     public DcMotor left, right, intake;
     private IMU imu;

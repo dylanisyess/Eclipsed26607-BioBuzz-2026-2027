@@ -19,6 +19,14 @@ public class PracticeShooterTuner extends LinearOpMode {
     double P = 0;
     double F = 0;
 
+    enum shooterMode {
+        velocity,
+        fullPower,
+        off
+    }
+
+    shooterMode mode = shooterMode.velocity;
+
     public void runOpMode() {
         shooter.init(hardwareMap);
         shooter.setPIDF(P, F);
@@ -31,8 +39,20 @@ public class PracticeShooterTuner extends LinearOpMode {
             double oldP = P;
             double oldF = F;
 
+            // Y goes back to velocity control after X or A, otherwise it switches high/low
             if (gamepad1.yWasPressed()) {
-                targetVelocity = (targetVelocity == highVelocity) ? lowVelocity : highVelocity;
+                if (mode == shooterMode.velocity) {
+                    targetVelocity = (targetVelocity == highVelocity) ? lowVelocity : highVelocity;
+                } else {
+                    mode = shooterMode.velocity;
+                }
+            }
+
+            if (gamepad1.xWasPressed()) {
+                mode = shooterMode.fullPower;
+            }
+            if (gamepad1.aWasPressed()) {
+                mode = shooterMode.off;
             }
 
             if (gamepad1.bWasPressed()) {
@@ -55,17 +75,28 @@ public class PracticeShooterTuner extends LinearOpMode {
             if (P != oldP || F != oldF) {
                 shooter.setPIDF(P, F);
             }
-            shooter.setVelocity(targetVelocity);
+            switch (mode) {
+                case velocity:
+                    shooter.setVelocity(targetVelocity);
+                    break;
+                case fullPower:
+                    shooter.setPower(1);
+                    break;
+                case off:
+                    shooter.setPower(0);
+                    break;
+            }
 
             double velocity = shooter.getVelocity();
 
+            telemetry.addData("Mode", mode);
             telemetry.addData("Target", "%.0f ticks/s", targetVelocity);
             telemetry.addData("Velocity", "%.0f ticks/s", velocity);
             telemetry.addData("Error", "%.0f ticks/s", targetVelocity - velocity);
             telemetry.addData("F (dpad left/right)", "%.4f", F);
             telemetry.addData("P (dpad up/down)", "%.4f", P);
             telemetry.addData("Step (B)", "%.4f", stepSizes[stepIndex]);
-            telemetry.addLine("Y switches high/low target");
+            telemetry.addLine("Y switches high/low target, X full power, A off");
             telemetry.update();
         }
     }
