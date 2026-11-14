@@ -21,12 +21,7 @@ public class PracticePark extends LinearOpMode {
 
         sleep(500);
 
-        Robot.left.setPower(0.3);
-        Robot.right.setPower(0.3);
-
-        sleep(800);
-
-        Robot.left.setPower(0);
-        Robot.right.setPower(0);
+        Robot.driveDistance(this, 32);
+        
     }
 }
