@@ -19,7 +19,7 @@ import java.util.List;
 
 public class PracticeC270 {
     // How far the camera is tilted up from level. Measure this on the robot
-    public static final double CAMERA_TILT_DEG = 40;
+    public static final double CAMERA_TILT_DEG = 45;
 
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;

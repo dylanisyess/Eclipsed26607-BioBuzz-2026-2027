@@ -10,8 +10,8 @@ public class PracticeShooter {
     // Untuned estimates for a bare UltraPlanetary (2800 ticks/s with no load)
     // Replace these with the values from PracticeShooterTuner
     public static final double P = 30;
-    public static final double F = 12;
-    public static final double TARGET_VELOCITY = 2000; // ticks per second
+    public static final double F = 15;
+    public static final double TARGET_VELOCITY = 1900; // ticks per second
 //max = 2200 ticks / sec
     private DcMotorEx shooter;
 

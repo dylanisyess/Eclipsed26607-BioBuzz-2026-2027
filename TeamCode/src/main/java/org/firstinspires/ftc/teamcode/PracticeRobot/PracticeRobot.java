@@ -24,9 +24,9 @@ import java.util.List;
 
 public class PracticeRobot {
     // Park where shots score, read "Forward distance" from telemetry, and put it here
-    public static final double ALIGN_DISTANCE = 120; // cm
+    public static final double ALIGN_DISTANCE = 58; // cm
     private static final double ALIGN_TOLERANCE = 2; // cm
-    private static final double ALIGN_MAX_POWER = 0.4;
+    private static final double ALIGN_MAX_POWER = 0.5;
     // Teleop forward is negative power. Flip this if the robot drives away from the target
     private static final double ALIGN_DIRECTION = -1;
 
@@ -34,6 +34,9 @@ public class PracticeRobot {
     private static final double TICKS_PER_WHEEL_REV = 28 * (76.0 / 21) * (68.0 / 13);
     private static final double WHEEL_DIAMETER = 9; // cm
     private static final double CM_PER_TICK = Math.PI * WHEEL_DIAMETER / TICKS_PER_WHEEL_REV;
+
+    // The left encoder counts down on positive power. Flip this if driveDistance runs until it times out
+    private static final double LEFT_ENCODER_DIRECTION = -1;
 
     // Flip this if the robot spins away from the target heading
     private static final double TURN_DIRECTION = 1;
@@ -48,11 +51,11 @@ public class PracticeRobot {
     private static final double HEADING_HOLD_KP = 0.02;
     private static final double HEADING_HOLD_MAX_POWER = 0.2;
 
-    private final PID alignPID = new PID(0.008, 0, 0);
     // The last number is the lowest power that still moves the robot. Too low and it stops short,
     // too high and it rocks back and forth at the end
-    private final PID turnPID = new PID(0.012, 0, 0, 0.3);
-    private final PID drivePID = new PID(0.015, 0, 0, 0.25);
+    private final PID alignPID = new PID(0.025, 0, 0, 0.35);
+    private final PID turnPID = new PID(0.012, 0, 0, 0.35);
+    private final PID drivePID = new PID(0.015, 0, 0, 0.3);
 
     public DcMotor left, right, intake;
     private IMU imu;
@@ -98,7 +101,7 @@ public class PracticeRobot {
     }
 
     public double getLeftDistance() {
-        return left.getCurrentPosition() * CM_PER_TICK;
+        return LEFT_ENCODER_DIRECTION * left.getCurrentPosition() * CM_PER_TICK;
     }
 
     public double getRightDistance() {
@@ -143,13 +146,14 @@ public class PracticeRobot {
     public void driveDistance(LinearOpMode opMode, double distance) {
         drivePID.reset();
 
+        // Left encoder only, the right motor's encoder is broken. The IMU keeps both sides going the same distance.
+        // Once it's replaced, go back to averaging (left + right) / 2
         double leftStart = getLeftDistance();
-        double rightStart = getRightDistance();
         ElapsedTime timeout = new ElapsedTime();
         ElapsedTime settled = new ElapsedTime();
 
         while (opMode.opModeIsActive() && timeout.seconds() < DRIVE_TIMEOUT && settled.seconds() < SETTLE_TIME) {
-            double traveled = ((getLeftDistance() - leftStart) + (getRightDistance() - rightStart)) / 2;
+            double traveled = getLeftDistance() - leftStart;
             double error = distance - traveled;
             double power = Range.clip(drivePID.calculate(error), -DRIVE_MAX_POWER, DRIVE_MAX_POWER);
 
@@ -177,8 +181,9 @@ public class PracticeRobot {
         }
     }
 
-    // Drives straight forward or back only. The driver still has to aim the robot at the hive
-    public void alignToDistance(double distance) {
+    // Drives straight forward or back only. The driver still has to aim the robot at the hive.
+    // Call it every loop. Returns true once the robot is within tolerance
+    public boolean alignToDistance(double distance) {
         double error = distance - ALIGN_DISTANCE;
         double power = 0;
 
@@ -188,6 +193,7 @@ public class PracticeRobot {
 
         left.setPower(ALIGN_DIRECTION * -power);
         right.setPower(ALIGN_DIRECTION * -power);
+        return power == 0;
     }
 
     public void shootHard() {

@@ -101,16 +101,16 @@ public class PracticeTeleop extends LinearOpMode {
                     }
                     break;
                 case shooter:
-//                    Robot.shooter.setVelocity(PracticeShooter.TARGET_VELOCITY);
-                    Robot.shooter.setPower(1);
-                    if (time.seconds() >= 3) {
+                    Robot.shooter.setVelocity(PracticeShooter.TARGET_VELOCITY);
+//                    Robot.shooter.setPower(0.9);
+                    if (time.seconds() >= 2.5) {
                         time.reset();
                         currentState = shooterState.intake;
                     }
                     break;
                 case intake:
-                    Robot.intake.setPower(0.4);
-                    if (time.seconds() >= 3) {
+                    Robot.intake.setPower(0.3);
+                    if (time.seconds() >= 4) {
                         time.reset();
                         currentState = shooterState.idle;
                     }
@@ -134,6 +134,7 @@ public class PracticeTeleop extends LinearOpMode {
                 currentState = shooterState.idle;
             }
 
+            telemetry.addData("Shooter velocity", "%.0f / %.0f ticks/s", Robot.shooter.getVelocity(), PracticeShooter.TARGET_VELOCITY);
             telemetry.update();
         }
 
