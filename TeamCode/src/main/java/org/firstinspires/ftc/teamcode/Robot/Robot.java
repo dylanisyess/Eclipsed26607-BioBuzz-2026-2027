@@ -28,7 +28,7 @@ import java.util.List;
 public class Robot {
     public DcMotor frontLeft, frontRight, backLeft, backRight;
     public CRServo frontLeftServo, frontRightServo, backLeftServo, backRightServo;
-    public AnalogInput frontLeftLamprey, frontRightLamprey, backLeftLamprey, backRightLamprey;
+    public AnalogInput frontLeftEncoder, frontRightEncoder, backLeftEncoder, backRightEncoder;
     double flOffsetDeg, frOffsetDeg, blOffsetDeg, brOffsetDeg;
     public DcMotor intake;
     public DcMotorEx shooter;
@@ -41,6 +41,9 @@ public class Robot {
     double R = 282.84;
     double FWD, STR, RCW, A, B, C, D, FRA, FLA, BLA, BRA, FRS, FLS, BLS, BRS, max;
     boolean neg, intaking, shooting;
+    public static final double AlignDist = 58;
+    public static final double IntakePower = 58;
+
 
 
     IMU imu;
@@ -65,10 +68,10 @@ public class Robot {
         backLeftServo = hardwareMap.get(CRServo.class, "backLeftServo");
         backRightServo = hardwareMap.get(CRServo.class, "backRightServo");
 
-        frontLeftLamprey = hardwareMap.get(AnalogInput.class, "frontLeftLamprey");
-        frontRightLamprey = hardwareMap.get(AnalogInput.class, "frontRightLamprey");
-        backLeftLamprey = hardwareMap.get(AnalogInput.class, "backLeftLamprey");
-        backRightLamprey = hardwareMap.get(AnalogInput.class, "backRightLamprey");
+        frontLeftEncoder = hardwareMap.get(AnalogInput.class, "frontLeftLamprey");
+        frontRightEncoder = hardwareMap.get(AnalogInput.class, "frontRightLamprey");
+        backLeftEncoder = hardwareMap.get(AnalogInput.class, "backLeftLamprey");
+        backRightEncoder = hardwareMap.get(AnalogInput.class, "backRightLamprey");
 
         intake = hardwareMap.get(DcMotor.class, "intake");
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
@@ -99,52 +102,12 @@ public class Robot {
 
     }
 
+
     double getHeading() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         return orientation.getYaw(AngleUnit.DEGREES);
     }
 
-//    public void intake() {
-//        if (intaking == false)  {
-//            intake.setPower(1);
-//            intaking = true;
-//        }
-//        else  {
-//            intake.setPower(0);
-//            intaking = false;
-//        }
-//    }
-
-    public void shootHard() {
-        shooter.setTargetPosition(96);
-        shooter.setPower(1);
-        while (shooter.isBusy()) {
-
-        }
-        shooter.setPower(0);
-        shooter.setTargetPosition(0);
-        shooter.setPower(0.5);
-        while (shooter.isBusy()) {
-
-        }
-        shooter.setPower(0);
-    }
-
-    public void shootSoft() {
-        shooter.setTargetPosition(96);
-        shooter.setPower(0.5);
-        while (shooter.isBusy()) {
-
-        }
-        shooter.setPower(0);
-        shooter.setTargetPosition(0);
-        shooter.setPower(0.5);
-        while (shooter.isBusy()) {
-
-        }
-        shooter.setPower(0);
-    }
 
 }
 
-//

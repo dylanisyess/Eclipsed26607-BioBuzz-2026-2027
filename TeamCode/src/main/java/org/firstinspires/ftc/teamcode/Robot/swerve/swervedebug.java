@@ -15,10 +15,10 @@ public class swervedebug extends LinearOpMode {
     public void runOpMode() {
         Robot.init(hardwareMap);
 
-        SwerveModule fl = new SwerveModule(Robot.frontLeft, Robot.frontLeftServo, Robot.frontLeftLamprey, 0.0025, 0, 0.0004, 0);
-        SwerveModule fr = new SwerveModule(Robot.frontRight, Robot.frontRightServo, Robot.frontRightLamprey, 0.0025, 0, 0.0004, 0);
-        SwerveModule bl = new SwerveModule(Robot.backLeft, Robot.backLeftServo, Robot.backLeftLamprey, 0.0025, 0, 0.0004, 0);
-        SwerveModule br = new SwerveModule(Robot.backRight, Robot.backRightServo, Robot.backRightLamprey, 0.0025, 0, 0.0004, 0);
+        SwerveModule fl = new SwerveModule(Robot.frontLeft, Robot.frontLeftServo, Robot.frontLeftEncoder, 0.0025, 0, 0.0004, 0);
+        SwerveModule fr = new SwerveModule(Robot.frontRight, Robot.frontRightServo, Robot.frontRightEncoder, 0.0025, 0, 0.0004, 0);
+        SwerveModule bl = new SwerveModule(Robot.backLeft, Robot.backLeftServo, Robot.backLeftEncoder, 0.0025, 0, 0.0004, 0);
+        SwerveModule br = new SwerveModule(Robot.backRight, Robot.backRightServo, Robot.backRightEncoder, 0.0025, 0, 0.0004, 0);
 
         waitForStart();
 
