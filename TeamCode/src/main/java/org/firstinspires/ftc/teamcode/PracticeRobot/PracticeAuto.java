@@ -4,13 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.util.C270;
 import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 
 @Autonomous(name="PracticeAuto", group="Linear OpMode")
 
 public class PracticeAuto extends LinearOpMode {
     private final PracticeRobot Robot = new PracticeRobot();
-    private final PracticeC270 C270 = new PracticeC270();
+    private final C270 C270 = new C270();
     private static final String ALLIANCE = "RED"; // "RED" or "BLUE"
     private static final double ALIGN_TIMEOUT = 3; // seconds
     private static final double ALIGN_SETTLE = 0.3; // seconds

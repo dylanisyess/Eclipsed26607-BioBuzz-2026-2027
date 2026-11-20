@@ -3,12 +3,12 @@ package org.firstinspires.ftc.teamcode.PracticeRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.PracticeRobot.PracticeC270;
+import org.firstinspires.ftc.teamcode.util.C270;
 import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 
 @Autonomous(name="PracticeC270VisionLoops", group="OpMode")
 public class PracticeC270VisionLoop extends OpMode {
-    PracticeC270 C270 = new PracticeC270();
+    C270 C270 = new C270();
 
     @Override
     public void init(){

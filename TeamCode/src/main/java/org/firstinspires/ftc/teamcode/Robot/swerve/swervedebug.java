@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.swerve;
+package org.firstinspires.ftc.teamcode.Robot.swerve;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.Robot.Robot;
 
 @TeleOp(name="SwerveDebug", group="Debug")
 public class swervedebug extends LinearOpMode {

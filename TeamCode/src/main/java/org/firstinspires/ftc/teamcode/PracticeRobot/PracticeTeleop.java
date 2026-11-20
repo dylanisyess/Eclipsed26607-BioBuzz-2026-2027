@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.util.C270;
 import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 
 @TeleOp(name="Practiceteleop", group="Linear OpMode")
@@ -12,7 +13,7 @@ public class PracticeTeleop extends LinearOpMode {
     private static final String ALLIANCE = "RED"; // "RED" or "BLUE"
 
     private final PracticeRobot Robot = new PracticeRobot();
-    private final PracticeC270 C270 = new PracticeC270();
+    private final C270 C270 = new C270();
 
     double left, right, omega, intakePower;
     boolean reverse;

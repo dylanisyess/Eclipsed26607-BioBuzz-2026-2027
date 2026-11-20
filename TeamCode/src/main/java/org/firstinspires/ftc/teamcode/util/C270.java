@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.PracticeRobot;
+package org.firstinspires.ftc.teamcode.util;
 
 import android.util.Size;
 
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagSingleDetection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PracticeC270 {
+public class C270 {
     // How far the camera is tilted up from level. Measure this on the robot
     public static final double CAMERA_TILT_DEG = 45;
 
