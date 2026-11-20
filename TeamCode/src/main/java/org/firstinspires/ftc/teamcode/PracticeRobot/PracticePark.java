@@ -22,6 +22,6 @@ public class PracticePark extends LinearOpMode {
         sleep(500);
 
         Robot.driveDistance(this, 32);
-        
+
     }
 }
