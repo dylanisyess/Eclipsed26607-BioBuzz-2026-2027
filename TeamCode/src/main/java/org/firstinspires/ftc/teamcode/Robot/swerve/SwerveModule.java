@@ -8,20 +8,20 @@ import org.firstinspires.ftc.teamcode.util.PID;
 public class SwerveModule {
     private DcMotor drive;
     private CRServo steer;
-    private AnalogInput lamprey;
+    private AnalogInput encoder;
     private PID PID;
     private double maxVoltage;
     private double angleOffsetDeg;
 
     public SwerveModule(DcMotor drive,
                         CRServo steer,
-                        AnalogInput lamprey,
+                        AnalogInput encoder,
                         double kP, double kI, double kD,
                         double angleOffsetDeg) {
 
         this.drive = drive;
         this.steer = steer;
-        this.lamprey = lamprey;
+        this.encoder = encoder;
         this.PID = new PID(kP, kI, kD);
         this.angleOffsetDeg = angleOffsetDeg;
     }
@@ -45,13 +45,13 @@ public class SwerveModule {
         steerOutput = com.qualcomm.robotcore.util.Range.clip(steerOutput, -1.0, 1.0);
 
         steer.setPower(steerOutput);
-        drive.setPower(targetSpeed);
+        drive.setPower(targetSpeed * Math.cos(Math.toRadians(error)));
     }
 
 
     public double getCurrentAngleDeg() {
-        double volts = lamprey.getVoltage();
-        double angle = (volts / 2.169) * 360.0;
+        double volts = encoder.getVoltage();
+        double angle = (volts / 3.3) * 360.0;
 
         angle -= angleOffsetDeg;
         angle = (angle % 360 + 360) % 360;
