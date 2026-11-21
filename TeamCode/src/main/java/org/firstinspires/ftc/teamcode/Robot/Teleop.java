@@ -16,11 +16,6 @@ public class Teleop extends LinearOpMode {
 
     private final Robot Robot = new Robot();
     private final C270 C270 = new C270();
-    final SwerveModule fl = new SwerveModule(Robot.frontLeft, Robot.frontLeftServo, Robot.frontLeftEncoder, 0.0025, 0, 0.0004, 0);
-    final SwerveModule fr = new SwerveModule(Robot.frontRight, Robot.frontRightServo, Robot.frontRightEncoder, 0.0025, 0, 0.0004, 0);
-    final SwerveModule bl = new SwerveModule(Robot.backLeft, Robot.backLeftServo, Robot.backLeftEncoder, 0.0025, 0, 0.0004, 0);
-    final SwerveModule br = new SwerveModule(Robot.backRight, Robot.backRightServo, Robot.backRightEncoder, 0.0025, 0, 0.0004, 0);
-    private final SwerveDrive SwerveDrive = new SwerveDrive(fl, fr, bl, br, 1, 1);
 
     double vx, vy, omega, intakePower;
     boolean reverse;
@@ -45,6 +40,13 @@ public class Teleop extends LinearOpMode {
     public void runOpMode() {
         Robot.init(hardwareMap);
         C270.init(hardwareMap, telemetry);
+
+        final SwerveModule fl = new SwerveModule(Robot.frontLeft, Robot.frontLeftServo, Robot.frontLeftEncoder, 0.0025, 0, 0.0004, 0);
+        final SwerveModule fr = new SwerveModule(Robot.frontRight, Robot.frontRightServo, Robot.frontRightEncoder, 0.0025, 0, 0.0004, 0);
+        final SwerveModule bl = new SwerveModule(Robot.backLeft, Robot.backLeftServo, Robot.backLeftEncoder, 0.0025, 0, 0.0004, 0);
+        final SwerveModule br = new SwerveModule(Robot.backRight, Robot.backRightServo, Robot.backRightEncoder, 0.0025, 0, 0.0004, 0);
+        private final SwerveDrive SwerveDrive = new SwerveDrive(fl, fr, bl, br, 1, 1);
+
         telemetry.update();
 
         Robot.intaking = false;
@@ -58,7 +60,7 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             vx = gamepad1.left_stick_x;
-            vy = gamepad1.left_stick_y;
+            -vy = gamepad1.left_stick_y;
             omega = gamepad1.right_stick_x;
 
             C270.update();
