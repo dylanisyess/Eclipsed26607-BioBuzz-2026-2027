@@ -15,8 +15,10 @@ public class PracticeTeleop extends LinearOpMode {
     private final PracticeRobot Robot = new PracticeRobot();
     private final C270 C270 = new C270();
 
-    double left, right, omega, intakePower;
-    boolean reverse;
+    // Spin in place speed for the right stick
+    private static final double TURN_SPEED = 0.6;
+
+    double x, y, omega, intakePower;
 
 
     enum shooterState {
@@ -26,14 +28,8 @@ public class PracticeTeleop extends LinearOpMode {
         intake
     }
 
-    enum driveState {
-        forward,
-        reverse
-    }
-
     ElapsedTime time = new ElapsedTime();
     shooterState currentState = shooterState.idle;
-    driveState driverState = driveState.forward;
 
     public void runOpMode() {
         Robot.init(hardwareMap);
@@ -41,18 +37,25 @@ public class PracticeTeleop extends LinearOpMode {
         telemetry.update();
 
         Robot.intaking = false;
-        reverse = false;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         waitForStart();
 
+        // Start with the robot's front facing away from the driver
+        Robot.resetHeading();
         Robot.runtime.reset();
 
         while (opModeIsActive()) {
-            left = gamepad1.left_stick_y;
-            right = gamepad1.right_stick_y;
-            omega = gamepad1.right_stick_x;
+            // Sticks read negative when pushed up
+            x = gamepad1.left_stick_x;
+            y = -gamepad1.left_stick_y;
+            omega = -gamepad1.right_stick_x * TURN_SPEED;
+
+            // Point the robot's front away from the driver and press back if field centric gets off
+            if (gamepad1.back) {
+                Robot.resetHeading();
+            }
 
             C270.update();
             AprilTagClusterDetection target = C270.getScorableCluster(ALLIANCE);
@@ -61,23 +64,10 @@ public class PracticeTeleop extends LinearOpMode {
             if (gamepad1.x && target != null) {
                 Robot.alignToDistance(C270.getForwardDistance(target));
             } else {
-                switch (driverState) {
-                    case forward:
-                        Robot.left.setPower(left);
-                        Robot.right.setPower(right);
-                        if (gamepad1.right_bumper) {
-                            driverState = driveState.reverse;
-                        }
-                        break;
-                    case reverse:
-                        Robot.left.setPower(-right);
-                        Robot.right.setPower(-left);
-                        if (gamepad1.left_bumper) {
-                            driverState = driveState.forward;
-                        }
-                        break;
-                }
+                Robot.driveFieldCentric(x, y, omega);
             }
+
+            telemetry.addData("Heading", "%.1f deg", Robot.getHeading());
 
             if (target != null) {
                 C270.displayClusterTelemetry(target);

@@ -50,6 +50,14 @@ public class PracticeRobot {
     private static final double HEADING_HOLD_KP = 0.02;
     private static final double HEADING_HOLD_MAX_POWER = 0.2;
 
+    // Field centric teleop. Raise the kP if it's slow to point where the stick says, lower it if it wobbles
+    private static final double FIELD_TURN_KP = 0.02;
+    private static final double FIELD_TURN_MAX_POWER = 0.6;
+    private static final double FIELD_STICK_DEADBAND = 0.1;
+    // How far past 90 deg the stick has to be before the robot switches between driving front first and back first.
+    // Stops it flipping back and forth when the stick points straight out the robot's side
+    private static final double FIELD_REVERSE_HYSTERESIS = 20; // deg
+
     // The last number is the lowest power that still moves the robot. Too low and it stops short,
     // too high and it rocks back and forth at the end
     private final PID alignPID = new PID(0.025, 0, 0, 0.35);
@@ -59,6 +67,8 @@ public class PracticeRobot {
     public DcMotor left, right, intake;
     private IMU imu;
     private double targetHeading;
+    private boolean fieldReversed;
+    private boolean fieldStickIdle = true;
 
     public PracticeShooter shooter = new PracticeShooter();
 
@@ -113,8 +123,53 @@ public class PracticeRobot {
 
     // Positive turn spins the robot counterclockwise
     private void setDrivePower(double forward, double turn) {
-        left.setPower(forward + TURN_DIRECTION * turn);
-        right.setPower(forward - TURN_DIRECTION * turn);
+        double leftPower = forward + TURN_DIRECTION * turn;
+        double rightPower = forward - TURN_DIRECTION * turn;
+
+        // Scale down together so a hard turn at full speed still turns instead of both sides clipping at 1
+        double max = Math.max(1, Math.max(Math.abs(leftPower), Math.abs(rightPower)));
+        left.setPower(leftPower / max);
+        right.setPower(rightPower / max);
+    }
+
+    // Field centric teleop for a tank chassis. It can't strafe, so it turns to face the way the stick points
+    // and drives that way, front first or back first, whichever is closer. Driving slows down the further off
+    // it's pointing so it doesn't swing wide. x and y are the stick with right and up positive, away from the
+    // driver is the way the robot faced at resetHeading. turn spins in place (counterclockwise positive)
+    // and only works while the stick is centered
+    public void driveFieldCentric(double x, double y, double turn) {
+        double magnitude = Math.min(1, Math.hypot(x, y));
+
+        if (magnitude < FIELD_STICK_DEADBAND) {
+            fieldStickIdle = true;
+            setDrivePower(0, turn);
+            return;
+        }
+
+        // Same as the IMU, 0 is away from the driver and counterclockwise is positive
+        double stickHeading = Math.toDegrees(Math.atan2(-x, y));
+        double frontError = AngleUnit.normalizeDegrees(stickHeading - getHeading());
+        double backError = AngleUnit.normalizeDegrees(frontError + 180);
+
+        if (fieldStickIdle) {
+            // Fresh push, use whichever end is closer
+            fieldReversed = Math.abs(frontError) > 90;
+            fieldStickIdle = false;
+        } else if (fieldReversed && Math.abs(backError) > 90 + FIELD_REVERSE_HYSTERESIS) {
+            fieldReversed = false;
+        } else if (!fieldReversed && Math.abs(frontError) > 90 + FIELD_REVERSE_HYSTERESIS) {
+            fieldReversed = true;
+        }
+
+        double error = fieldReversed ? backError : frontError;
+        double turnPower = Range.clip(FIELD_TURN_KP * error, -FIELD_TURN_MAX_POWER, FIELD_TURN_MAX_POWER);
+        double speed = magnitude * Math.max(0, Math.cos(Math.toRadians(error)));
+        if (fieldReversed) {
+            speed = -speed;
+        }
+
+        // Forward for the driver is negative motor power
+        setDrivePower(-speed, turnPower);
     }
 
     // Blocks until the robot reaches the heading or times out

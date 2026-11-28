@@ -45,7 +45,7 @@ public class Teleop extends LinearOpMode {
         final SwerveModule fr = new SwerveModule(Robot.frontRight, Robot.frontRightServo, Robot.frontRightEncoder, 0.0025, 0, 0.0004, 0);
         final SwerveModule bl = new SwerveModule(Robot.backLeft, Robot.backLeftServo, Robot.backLeftEncoder, 0.0025, 0, 0.0004, 0);
         final SwerveModule br = new SwerveModule(Robot.backRight, Robot.backRightServo, Robot.backRightEncoder, 0.0025, 0, 0.0004, 0);
-        private final SwerveDrive SwerveDrive = new SwerveDrive(fl, fr, bl, br, 1, 1);
+        final SwerveDrive SwerveDrive = new SwerveDrive(fl, fr, bl, br, 1, 1);
 
         telemetry.update();
 
@@ -60,7 +60,7 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
             vx = gamepad1.left_stick_x;
-            -vy = gamepad1.left_stick_y;
+            vy = -gamepad1.left_stick_y;
             omega = gamepad1.right_stick_x;
 
             C270.update();
